@@ -207,7 +207,7 @@ export default function Login() {
             </button>
           </form>
 
-          <div className='mt-6 p-4 bg-blue-50 rounded-lg'>
+          {/* <div className='mt-6 p-4 bg-blue-50 rounded-lg'>
             <p className='text-sm text-blue-800 text-center'>
               <strong>Demo Login Admin:</strong>
               <br />
@@ -223,7 +223,7 @@ export default function Login() {
               <br />
               Password: 123456
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

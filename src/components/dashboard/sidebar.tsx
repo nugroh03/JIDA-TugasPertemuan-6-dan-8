@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Anchor, BarChart3, Ship, CreditCard, LogOut } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
-import { useEffect } from 'react';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
@@ -15,8 +14,6 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
-  // const { user, logout } = useAuth();
-  // const router = useRouter();
 
   const user = session?.user;
 
