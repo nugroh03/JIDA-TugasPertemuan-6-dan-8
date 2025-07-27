@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Boat {
+  id           Int      @id @default(autoincrement())
+  name         String
+  type         String
+  category     String   @default("wisata")
+  capacity     Int
+  duration     String?
+  price        String
+  priceNum     Int      @default(0)
+  rating       Float    @default(4.0)
+  reviews      Int      @default(0)
+  description  String
+  image        String?
+  gallery      String[] @default([])
+  includes     String[] @default([])
+  destinations String[] @default([])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  features       BoatFeature[]
+  specifications BoatSpecification[]
+
+  @@map("boats")
+}
+
+model BoatFeature {
+  id     Int    @id @default(autoincrement())
+  name   String
+  icon   String @default("anchor")
+  boatId Int
+  boat   Boat   @relation(fields: [boatId], references: [id], onDelete: Cascade)
+
+  @@map("boat_features")
+}
+
+model BoatSpecification {
+  id     Int    @id @default(autoincrement())
+  key    String // e.g., "Panjang", "Lebar", "Mesin"
+  value  String // e.g., "15 meter", "4 meter", "2 x 200 HP"
+  boatId Int
+  boat   Boat   @relation(fields: [boatId], references: [id], onDelete: Cascade)
+
+  @@unique([key, boatId])
+  @@map("boat_specifications")
+}
