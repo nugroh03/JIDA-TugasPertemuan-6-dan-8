@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import React, { useState } from 'react';
@@ -88,20 +89,55 @@ export default function AddBoatPage() {
     }));
   };
 
+  // const handleArrayChange = (field: string, index: number, value: any) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [field]: prev[field as keyof typeof prev].map((item: any, i: number) =>
+  //       i === index ? value : item
+  //     ),
+  //   }));
+  // };
+
   const handleArrayChange = (field: string, index: number, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: prev[field as keyof typeof prev].map((item: any, i: number) =>
-        i === index ? value : item
-      ),
-    }));
+    setFormData((prev) => {
+      const currentField = prev[field as keyof typeof prev];
+
+      if (Array.isArray(currentField)) {
+        const updatedArray = currentField.map((item, i) =>
+          i === index ? value : item
+        );
+        return {
+          ...prev,
+          [field]: updatedArray,
+        };
+      }
+
+      console.warn(`handleArrayChange: Field "${field}" is not an array.`);
+      return prev;
+    });
   };
 
+  // const addArrayItem = (field: string, defaultValue: any) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [field]: [...prev[field as keyof typeof prev], defaultValue],
+  //   }));
+  // };
+
   const addArrayItem = (field: string, defaultValue: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: [...prev[field as keyof typeof prev], defaultValue],
-    }));
+    setFormData((prev) => {
+      const currentField = prev[field as keyof typeof prev];
+
+      if (Array.isArray(currentField)) {
+        return {
+          ...prev,
+          [field]: [...currentField, defaultValue],
+        };
+      }
+
+      console.warn(`addArrayItem: Field "${field}" is not an array.`);
+      return prev;
+    });
   };
 
   const removeArrayItem = (field: string, index: number) => {

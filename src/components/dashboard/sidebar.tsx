@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Anchor, BarChart3, Ship, CreditCard, LogOut } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { signOut, useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
@@ -13,13 +14,11 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
-  const router = useRouter();
+  const { data: session } = useSession();
+  // const { user, logout } = useAuth();
+  // const router = useRouter();
 
-  const handleLogout = () => {
-    logout();
-    router.push('/login');
-  };
+  const user = session?.user;
 
   return (
     <aside className='w-64 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col'>
@@ -52,7 +51,7 @@ export default function Sidebar() {
           <p className='text-xs text-gray-500'>{user?.email}</p>
         </div>
         <button
-          onClick={handleLogout}
+          onClick={() => signOut({ callbackUrl: '/' })}
           className='w-full flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors'
         >
           <LogOut className='h-5 w-5 mr-2' />

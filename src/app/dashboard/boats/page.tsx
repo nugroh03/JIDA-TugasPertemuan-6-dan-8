@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Ship, Loader2, PlusCircle, Users, Anchor } from 'lucide-react';
 
 import Link from 'next/link';
@@ -35,7 +35,9 @@ export default function ManageBoatsPage() {
           throw new Error(result.message || 'Terjadi kesalahan pada server');
         }
         dispatch(setListBoats(result.data));
-      } catch (err) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
+        console.log(err);
         dispatch(setLoading(false));
       } finally {
         dispatch(setLoading(false));

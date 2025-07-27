@@ -47,6 +47,7 @@ export default function Home() {
         dispatch(setListFlagshipBoat(topRatedBoats));
         dispatch(setLoading(false));
       } catch (e) {
+        console.log(e);
         // setError(
         //   e instanceof Error
         //     ? e.message

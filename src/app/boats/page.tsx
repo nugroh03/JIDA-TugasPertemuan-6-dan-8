@@ -5,7 +5,6 @@ import { Search, Anchor, Waves, Fish, Sun, Loader2 } from 'lucide-react';
 import { sortBoats } from '../../lib/boats';
 import type {
   BoatCategory,
-  Boat,
   CapacityRange,
   SortOption,
   CategoryOption,
@@ -18,9 +17,7 @@ import { setListBoats, setLoading } from '@/lib/features/boatSlice';
 
 export default function Boats() {
   const dispatch = useAppDispatch();
-  // const [boats, setBoats] = useState<Boat[]>([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
+
   const loading = useAppSelector((state) => state.boat.loading);
   const boats = useAppSelector((state) => state.boat.boats);
 
@@ -45,6 +42,7 @@ export default function Boats() {
         dispatch(setListBoats(apiResponse.data));
         dispatch(setLoading(false));
       } catch (e) {
+        console.log(e);
         dispatch(setLoading(false));
       } finally {
         dispatch(setLoading(false));

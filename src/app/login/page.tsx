@@ -3,56 +3,110 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Eye, EyeOff, Anchor, AlertCircle } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
+import { Eye, EyeOff, Anchor } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 
 export default function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  // const [formData, setFormData] = useState({
+  //   email: '',
+  //   password: '',
+  // });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  // const [error, setError] = useState('');
 
-  const { login } = useAuth();
-  const router = useRouter();
+  // const { login } = useAuth();
+  // const router = useRouter();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setError('');
-  };
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  //   setError('');
+  // };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   setError('');
+
+  //   try {
+  //     const response = await fetch('/api/v1/auth/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (response.ok) {
+  //       login(data.token);
+  //       router.push('/dashboard');
+  //     } else {
+  //       setError(data.message || 'Login gagal');
+  //     }
+  //   } catch (error) {
+  //     setError('Terjadi kesalahan. Silakan coba lagi.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // NEW STEP LOGIN
+
+  const router = useRouter(); // tambahkan ini
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  // const [registerEmail, setRegisterEmail] = useState('');
+  // const [registerPassword, setRegisterPassword] = useState('');
+  // const [registerName, setRegisterName] = useState('');
+
+  // const handleRegister = async () => {
+  //   const res = await fetch('/api/auth/signup', {
+  //     method: 'POST',
+  //     body: JSON.stringify({
+  //       email: registerEmail,
+  //       password: registerPassword,
+  //       name: registerName,
+  //     }),
+  //     headers: { 'Content-Type': 'application/json' },
+  //   });
+
+  //   const data = await res.json();
+  //   if (res.ok) {
+  //     alert('Register success');
+  //   } else {
+  //     alert(data.error || 'Register failed');
+  //   }
+  // };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setIsLoading(true);
-    setError('');
+    console.log(email, password);
+    const res = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+    });
 
-    try {
-      const response = await fetch('/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    console.log(res);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        login(data.token);
-        router.push('/dashboard');
-      } else {
-        setError(data.message || 'Login gagal');
-      }
-    } catch (error) {
-      setError('Terjadi kesalahan. Silakan coba lagi.');
-    } finally {
+    if (res?.error) {
       setIsLoading(false);
+      alert(res.error);
+    } else {
+      console.log('DONE LOGIN');
+
+      // setIsLoading(false);
+      router.push('/dashboard'); // ganti ke halaman tujuanmu
     }
   };
 
@@ -75,20 +129,18 @@ export default function Login() {
                 <Anchor className='h-8 w-8 text-white' />
               </div>
             </div>
-            <h1 className='text-2xl font-bold text-gray-900 mb-2'>
-              Admin Login
-            </h1>
+            <h1 className='text-2xl font-bold text-gray-900 mb-2'>Login</h1>
             <p className='text-gray-600'>Masuk ke dashboard Marina Boat</p>
           </div>
 
-          {error && (
+          {/* {error && (
             <div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center'>
               <AlertCircle className='h-5 w-5 text-red-600 mr-2 flex-shrink-0' />
               <span className='text-red-800 text-sm'>{error}</span>
             </div>
-          )}
+          )} */}
 
-          <form onSubmit={handleSubmit} className='space-y-6'>
+          <form onSubmit={handleLogin} className='space-y-6'>
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-2'>
                 Email
@@ -96,8 +148,8 @@ export default function Login() {
               <input
                 type='email'
                 name='email'
-                value={formData.email}
-                onChange={handleInputChange}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors'
                 placeholder='Masukkan email anda'
@@ -112,8 +164,8 @@ export default function Login() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name='password'
-                  value={formData.password}
-                  onChange={handleInputChange}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   className='w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors'
                   placeholder='Masukkan password'
@@ -146,15 +198,30 @@ export default function Login() {
                 'Masuk'
               )}
             </button>
+            <button
+              type='button'
+              onClick={() => router.push('/signup')}
+              className='w-full  text-blue-700 py-3 px-4 rounded-lg font-semibold border border-gray-700 hover:bg-gray-500 hover:text-white  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center'
+            >
+              Register
+            </button>
           </form>
 
           <div className='mt-6 p-4 bg-blue-50 rounded-lg'>
             <p className='text-sm text-blue-800 text-center'>
-              <strong>Demo Login:</strong>
+              <strong>Demo Login Admin:</strong>
               <br />
-              Email: admin@marinaboat.com
+              Email: admin1@gmail.com
               <br />
-              Password: adminpassword123
+              Password: admin123+
+            </p>
+
+            <p className='text-sm text-blue-800 text-center'>
+              <strong>Demo Login User:</strong>
+              <br />
+              Email: user1@gmail.com
+              <br />
+              Password: 123456
             </p>
           </div>
         </div>

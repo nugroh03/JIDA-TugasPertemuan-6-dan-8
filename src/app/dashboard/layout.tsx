@@ -2,29 +2,36 @@
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
+
 import Sidebar from '@/components/dashboard/sidebar';
+import { useSession } from 'next-auth/react';
+import { Loader2 } from 'lucide-react';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isLoading } = useAuth();
+  const { status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (status === 'unauthenticated') {
       router.push('/login');
     }
-  }, [user, isLoading, router]);
+  }, [status, router]);
 
-  if (isLoading || !user) {
+  if (status === 'loading') {
     return (
-      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
-        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700'></div>
+      <div className='text-center py-12'>
+        <Loader2 className='h-16 w-16 text-blue-700 mx-auto mb-4 animate-spin' />
+        <h3 className='text-xl font-semibold text-gray-900'>Loading...</h3>
       </div>
     );
+  }
+
+  if (status === 'unauthenticated') {
+    return null;
   }
 
   return (

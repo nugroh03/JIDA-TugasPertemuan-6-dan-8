@@ -316,7 +316,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     // Update kapal dengan transaction untuk konsistensi data
     const updatedBoat = await prisma.$transaction(async (tx) => {
       // Update data utama kapal
-      const boat = await tx.boat.update({
+      await tx.boat.update({
         where: { id },
         data: {
           ...boatData,

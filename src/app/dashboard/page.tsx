@@ -11,10 +11,10 @@ import {
   Ship,
   Star,
   Activity,
-  LogOut,
 } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
+
 import type { BoatStats } from '../../types';
+import { useSession } from 'next-auth/react';
 
 const StatCardSkeleton = () => (
   <div className='bg-white rounded-lg shadow-sm p-6 animate-pulse'>
@@ -30,32 +30,33 @@ const StatCardSkeleton = () => (
 );
 
 export default function Dashboard() {
-  const { user, logout, isLoading: isAuthLoading } = useAuth();
-  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  // const { user, logout, isLoading: isAuthLoading } = useAuth();
   const [stats, setStats] = useState<BoatStats | null>(null);
   const [isStatsLoading, setIsStatsLoading] = useState(true);
 
-  useEffect(() => {
-    if (!isAuthLoading && !user) {
-      router.push('/login');
-    }
-  }, [user, isAuthLoading, router]);
+  // useEffect(() => {
+  //   if (!isAuthLoading && !user) {
+  //     router.push('/login');
+  //   }
+  // }, [user, isAuthLoading, router]);
 
   useEffect(() => {
-    if (user) {
+    if (session) {
       fetch('/api/v1/boats/stats')
         .then((res) => res.json())
         .then((data) => setStats(data.data))
         .finally(() => setIsStatsLoading(false));
     }
-  }, [user]);
+  }, [session]);
 
-  const handleLogout = () => {
-    logout();
-    router.push('/login');
-  };
+  // const handleLogout = () => {
+  //   logout();
+  //   router.push('/login');
+  // };
 
-  if (isAuthLoading) {
+  if (status === 'loading') {
     return (
       <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
         <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700'></div>
@@ -63,9 +64,10 @@ export default function Dashboard() {
     );
   }
 
-  if (!user) {
-    return null;
-  }
+  // if (!session) {
+  //   router.push('/login');
+  //   return null;
+  // }
 
   const dashboardStats = [
     {
@@ -236,21 +238,21 @@ export default function Dashboard() {
               <div className='flex items-center space-x-3'>
                 <div className='w-2 h-2 bg-green-500 rounded-full'></div>
                 <span className='text-sm text-gray-600'>
-                  Kapal "Ocean Explorer" berhasil ditambahkan
+                  Kapal Ocean Explorer berhasil ditambahkan
                 </span>
                 <span className='text-xs text-gray-400'>2 jam yang lalu</span>
               </div>
               <div className='flex items-center space-x-3'>
                 <div className='w-2 h-2 bg-blue-500 rounded-full'></div>
                 <span className='text-sm text-gray-600'>
-                  Data kapal "Fishing Master" diperbarui
+                  Data kapal Fishing Master diperbarui
                 </span>
                 <span className='text-xs text-gray-400'>5 jam yang lalu</span>
               </div>
               <div className='flex items-center space-x-3'>
                 <div className='w-2 h-2 bg-orange-500 rounded-full'></div>
                 <span className='text-sm text-gray-600'>
-                  Booking baru untuk "Sunset Cruiser"
+                  Booking baru untuk Sunset Cruiser
                 </span>
                 <span className='text-xs text-gray-400'>1 hari yang lalu</span>
               </div>

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { AuthProvider } from '@/hooks/useAuth';
 import LayoutClient from '@/components/layoutclient';
 import StoreProvider from './StoreProvider';
+import NextAuthSession from './NextAuthSession';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,11 +22,17 @@ export default function RootLayout({
   return (
     <StoreProvider>
       <html lang='id'>
-        <AuthProvider>
+        {/* <AuthProvider>
           <body className={inter.className}>
             <LayoutClient>{children}</LayoutClient>
           </body>
-        </AuthProvider>
+        </AuthProvider> */}
+
+        <body className={inter.className}>
+          <NextAuthSession>
+            <LayoutClient>{children}</LayoutClient>
+          </NextAuthSession>
+        </body>
       </html>
     </StoreProvider>
   );

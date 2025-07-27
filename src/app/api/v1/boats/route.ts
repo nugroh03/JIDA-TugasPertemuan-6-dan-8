@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { NextResponse } from 'next/server';
 // import boats from '../../../../data/boats.json';
 // import { getAllBoats } from '../../../../lib/boats';
@@ -200,7 +201,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { Boat, BoatFeature } from '@/types';
+import { BoatFeature } from '@/types';
 
 // GET - Ambil semua data kapal
 export async function GET() {
@@ -218,7 +219,7 @@ export async function GET() {
     // Transform data untuk sesuai dengan interface frontend
     const transformedBoats = boats.map((boat: any) => ({
       ...boat,
-      specifications: boat.specifications.reduce((acc, spec) => {
+      specifications: boat.specifications.reduce((acc: any, spec: any) => {
         acc[spec.key] = spec.value;
         return acc;
       }, {} as Record<string, string>),
